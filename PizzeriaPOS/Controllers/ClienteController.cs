@@ -96,7 +96,7 @@ namespace PizzeriaPOS.Controllers
             }
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteAsync(int Id)
         {
             try
