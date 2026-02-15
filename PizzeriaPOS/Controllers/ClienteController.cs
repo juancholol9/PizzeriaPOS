@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using PizzeriaPOS.DTOs;
 using PizzeriaPOS.Repository;
 
@@ -18,19 +19,42 @@ namespace PizzeriaPOS.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var clientes = await _repository.GetAllAsync();
-            return Ok(new { mensaje = "ok", response = clientes });
+            try
+            {
+                var clientes = await _repository.GetAllAsync();
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = clientes });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    mensaje = "error",
+                    error = ex.Message,
+                    detalles = ex.ToString()
+                });
+            }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
-            var cliente = await _repository.GetByIdAsync(id);
+            try
+            {
+                var cliente = await _repository.GetByIdAsync(id);
+                if (cliente == null)
+                    return StatusCode(StatusCodes.Status404NotFound, new { mensaje = "cliente no existe" });
 
-            if (cliente == null)
-                return NotFound(new { mensaje = "Cliente no encontrado" });
-
-            return Ok(new { mensaje = "ok", response = cliente });
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = cliente });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    mensaje = "error",
+                    error = ex.Message,
+                    detalles = ex.ToString()
+                });
+            }
         }
 
         [HttpPost]
@@ -39,54 +63,61 @@ namespace PizzeriaPOS.Controllers
             try
             {
                 var cliente = await _repository.CreateAsync(request);
-
-                return CreatedAtAction(
-                    nameof(GetByIdAsync),
-                    new { id = cliente!.Id },
-                    new { mensaje = "Cliente creado correctamente", response = cliente }
-                );
+                return StatusCode(StatusCodes.Status201Created, new { mensaje = "ok", response = cliente });
             }
             catch (Exception ex)
             {
-                return BadRequest(new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     mensaje = "error",
-                    error = ex.Message
+                    error = ex.Message,
+                    detalles = ex.ToString()
                 });
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateAsync(int id, [FromBody] ClienteCreateUpdateDTO request)
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> UpdateAsync([FromBody] ClienteCreateUpdateDTO request, int id)
         {
             try
             {
                 var cliente = await _repository.UpdateAsync(request, id);
-
                 if (cliente == null)
-                    return NotFound(new { mensaje = "Cliente no encontrado" });
+                    return StatusCode(StatusCodes.Status404NotFound, new { mensaje = "cliente no existe" });
 
-                return Ok(new { mensaje = "Cliente actualizado correctamente", response = cliente });
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok", response = cliente });
             }
             catch (Exception ex)
             {
-                return BadRequest(new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     mensaje = "error",
-                    error = ex.Message
+                    error = ex.Message,
+                    detalles = ex.ToString()
                 });
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
-            var deleted = await _repository.DeleteAsync(id);
+            try
+            {
+                var result = await _repository.DeleteAsync(id);
+                if (result == false)
+                    return StatusCode(StatusCodes.Status404NotFound, new { mensaje = "cliente no existe" });
 
-            if (!deleted)
-                return NotFound(new { mensaje = "Cliente no encontrado" });
-
-            return Ok(new { mensaje = "Cliente eliminado correctamente" });
+                return StatusCode(StatusCodes.Status200OK, new { mensaje = "ok" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    mensaje = "error",
+                    error = ex.Message,
+                    detalles = ex.ToString()
+                });
+            }
         }
     }
 }

@@ -14,6 +14,7 @@
     {
         public int Id { get; set; }
         public int CategoriaId { get; set; }
+        public string Categoria { get; set; }
         public string Nombre { get; set; } = null!;
         public string? Descripcion { get; set; }
         public decimal Precio { get; set; }
@@ -22,7 +23,6 @@
         public DateTime? FechaCreacion { get; set; }
     }
 
-    // Optional: For when you need to include Categoria info
     public class ProductoDetailDTO : ProductoDTO
     {
         public CategoriaDTO? Categoria { get; set; }

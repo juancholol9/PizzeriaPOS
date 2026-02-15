@@ -20,11 +20,10 @@ builder.Services.AddDbContext<PizzeriaPosContext>(options => options.UseSqlServe
 
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
-//builder.Services.AddScoped<IDireccionRepository, DireccionRepository>();
-//builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
-//builder.Services.AddScoped<IPedidoDetalleRepository, PedidoDetalleRepository>();
-//builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
-//builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IDireccionRepository, DireccionRepository>();
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

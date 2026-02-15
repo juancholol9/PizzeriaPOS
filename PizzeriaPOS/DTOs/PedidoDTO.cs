@@ -7,21 +7,22 @@
         public int UsuarioId { get; set; }
         public string? Estado { get; set; }
         public List<PedidoDetalleCreateUpdateDTO> Detalles { get; set; } = new();
-        // Total will be calculated from Detalles
     }
 
     public class PedidoDTO
     {
         public int Id { get; set; }
         public int ClienteId { get; set; }
+        public string Cliente { get; set; }
         public int DireccionId { get; set; }
+        public string Direccion { get; set; } = null!;
         public int UsuarioId { get; set; }
+        public string NombreUsuario { get; set; }
         public DateTime? Fecha { get; set; }
         public decimal Total { get; set; }
         public string? Estado { get; set; }
     }
 
-    // Optional: For detailed view with all relationships
     public class PedidoDetailDTO : PedidoDTO
     {
         public ClienteDTO? Cliente { get; set; }
